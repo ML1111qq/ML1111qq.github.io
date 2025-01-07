@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="initial-scale=1.0, user-scalable=no, width=device-width"
+    />
+    <title>HELLO, AMAP!</title>
+    <style>
+      html,
+      body,
+      #container {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+      <script type="text/javascript">
+        window._AMapSecurityConfig = {
+          securityJsCode: "f5c3db83a5aeac39d6934ec5982645c6",
+        };
+      </script>
+<script src="https://webapi.amap.com/maps?v=2.0&key=8c546361d59893a8da776f6b7d1496f2"></script>
+  </head>
+  <body>
+    <div id="container"></div>
+  </body>
+  <script>
+    const map = new AMap.Map("container", {
+  viewMode: '2D', //默认使用 2D 模式
+  zoom: 11, //地图级别
+  center: [116.683546,39.538304], //地图中心点
+});
+  </script>
+
+</html>
