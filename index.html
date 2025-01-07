@@ -7,7 +7,8 @@
       name="viewport"
       content="initial-scale=1.0, user-scalable=no, width=device-width"
     />
-    <title>HELLO, AMAP!</title>
+    <title>廊坊区域机构位置展示</title>
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
     <style>
       html,
       body,
@@ -15,23 +16,141 @@
         width: 100%;
         height: 100%;
       }
+      .input-card{
+        position: absolute;
+        top: 8%;
+        left: 1%;
+        height: 120px;
+        width: 160px;
+      }
     </style>
       <script type="text/javascript">
         window._AMapSecurityConfig = {
           securityJsCode: "f5c3db83a5aeac39d6934ec5982645c6",
         };
       </script>
-<script src="https://webapi.amap.com/maps?v=2.0&key=8c546361d59893a8da776f6b7d1496f2"></script>
+<script src="https://webapi.amap.com/loader.js"></script>
+
   </head>
   <body>
-    <div id="container"></div>
+    <div id="container">
+      
+    </div>
+    <div class='input-card'>
+      <div class="input-item">
+          <input type="checkbox" checked onclick="toggleScale(this)"/>比例尺
+      </div>
+      
+      <div class="input-item">
+          <input type="checkbox" id="toolbar"  checked onclick="toggleToolBar(this)"/>工具条
+      </div>
+      
+      <div class="input-item">
+          <input type="checkbox" id="controlBar" checked onclick="toggleControlBar(this)"/>工具条方向盘
+      </div>
+      
+      <div class="input-item">
+          <input type="checkbox" id="overview" checked onclick="toggleOverViewShow(this)"/>显示鹰眼
+      </div>
+  </div>
   </body>
-  <script>
-    const map = new AMap.Map("container", {
+  <!-- <script>
+  const map = new AMap.Map("container", {
   viewMode: '2D', //默认使用 2D 模式
   zoom: 11, //地图级别
   center: [116.683546,39.538304], //地图中心点
 });
-  </script>
+//异步加载控件
+AMap.plugin('AMap.ToolBar',function(){ 
+  var toolbar = new AMap.ToolBar(); //缩放工具条实例化
+  map.addControl(toolbar); //添加控件
+});
+AMap.plugin('AMap.MapType',function(){ 
+  var toolbar = new AMap.MapType(); //缩放工具条实例化
+  map.addControl(toolbar); //添加控件
+});
 
+  </script> -->
+<script>
+  var toolBar,controlBar,overView,scale
+  AMapLoader.load({
+    key: "8c546361d59893a8da776f6b7d1496f2", //申请好的 Web 端开发者 Key，调用 load 时必填
+    version: "2.0", //指定要加载的 JS API 的版本，缺省时默认为 1.4.15
+    plugins: ["AMap.ToolBar", "AMap.Scale","AMap.ControlBar","AMap.HawkEye","AMap.MapType"], //需要使用的的插件列表
+  }).then((AMap) => {
+    const map = new AMap.Map("container", {
+    viewMode: '2D', //默认使用 2D 模式
+    zoom: 11, //地图级别
+     center: [116.683546,39.538304], //地图中心点
+  });
+ toolBar = new AMap.ToolBar({
+      visible: true,
+      position: {
+        top: '110px',
+        right: '40px'
+      }
+  }),
+  controlBar = new AMap.ControlBar({
+      visible: true,
+      position: {
+        top: '10px',
+        right: '10px'
+      }
+  }),
+  overView = new AMap.HawkEye({
+      visible: true
+  }),
+  scale = new AMap.Scale({
+      visible: true
+  });
+
+  var ruler = new AMap.MapType({
+    visible: false
+  });
+
+  map.addControl(scale);
+  map.addControl(toolBar);
+  map.addControl(controlBar);
+  map.addControl(overView);
+  map.addControl(ruler);
+  });
+  function toggleScale(checkbox) {
+      if (checkbox.checked) {
+          scale.show();
+      } else {
+          scale.hide();
+      }
+  }
+  function toggleToolBar(checkbox) {
+      if (checkbox.checked) {
+          showToolBar();
+      } else {
+          hideToolBar();
+      }
+  }
+  function toggleControlBar(checkbox) {
+      if (checkbox.checked) {
+          document.getElementById('controlBar').checked = true;
+          controlBar.show();
+      } else {
+          document.getElementById('controlBar').checked = false;
+          controlBar.hide();
+      }
+  }
+  function toggleOverViewShow(checkbox) {
+      if (checkbox.checked) {
+          overView.show();
+      } else {
+          overView.hide();
+      }
+  }
+  function showToolBar() {
+      document.getElementById('toolbar').checked = true;
+      toolBar.show();
+  }
+  function hideToolBar() {
+      document.getElementById('toolbar').checked = false;
+      toolBar.hide();
+  }
+</script>
 </html>
