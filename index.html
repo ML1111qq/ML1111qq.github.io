@@ -22,7 +22,14 @@
         left: 1%;
         height: 120px;
         width: 160px;
+      }.fcolor{
+        background-color: #3A3361;
+        color: #FEF9FF;
+        padding: 4px 6px 0 6px;
+      }.amap-info-outer{
+        padding: 0;
       }
+
     </style>
       <script type="text/javascript">
         window._AMapSecurityConfig = {
@@ -54,31 +61,14 @@
       </div>
   </div>
   </body>
-  <!-- <script>
-  const map = new AMap.Map("container", {
-  viewMode: '2D', //默认使用 2D 模式
-  zoom: 11, //地图级别
-  center: [116.683546,39.538304], //地图中心点
-});
-//异步加载控件
-AMap.plugin('AMap.ToolBar',function(){ 
-  var toolbar = new AMap.ToolBar(); //缩放工具条实例化
-  map.addControl(toolbar); //添加控件
-});
-AMap.plugin('AMap.MapType',function(){ 
-  var toolbar = new AMap.MapType(); //缩放工具条实例化
-  map.addControl(toolbar); //添加控件
-});
-
-  </script> -->
 <script>
-  var toolBar,controlBar,overView,scale
+  var toolBar,controlBar,overView,scale,map,marker,infoWindow,circleMarker
   AMapLoader.load({
     key: "8c546361d59893a8da776f6b7d1496f2", //申请好的 Web 端开发者 Key，调用 load 时必填
     version: "2.0", //指定要加载的 JS API 的版本，缺省时默认为 1.4.15
-    plugins: ["AMap.ToolBar", "AMap.Scale","AMap.ControlBar","AMap.HawkEye","AMap.MapType"], //需要使用的的插件列表
+    plugins: ["AMap.ToolBar", "AMap.Scale","AMap.ControlBar","AMap.HawkEye","AMap.MapType","AMap.InfoWindow","AMap.CircleMarker"], //需要使用的的插件列表
   }).then((AMap) => {
-    const map = new AMap.Map("container", {
+    map = new AMap.Map("container", {
     viewMode: '2D', //默认使用 2D 模式
     zoom: 11, //地图级别
      center: [116.683546,39.538304], //地图中心点
@@ -107,12 +97,69 @@ AMap.plugin('AMap.MapType',function(){
   var ruler = new AMap.MapType({
     visible: false
   });
+  //点标记显示内容
+const markerContent = `<div class="custom-content-marker">
+<img src="//c-ssl.duitang.com/uploads/blog/202310/03/d3S218geCqmZ4e2.jpg">
+</div>`
+// const position = new AMap.LngLat(116.751282,39.614755); //Marker 经纬度
+//  marker = new AMap.Marker({
+//   position: position,
+//   content: markerContent, //将 html 传给 content
+//   offset: new AMap.Pixel(-13, -30), //以 icon 的 [center bottom] 为原点
+// });
+// 假设这是你的位置数据列表
+const locations = [
+  { lng: 116.751282, lat: 39.614755,info:'2',addres:'3' },
+  { lng: 116.404, lat: 39.915,info:'1'},
+  { lng: 115.777268, lat: 37.713982,info:'衡水艾普敦',addres:'衡水市桃城区106国道' }
+];
+// 创建一个全局的 InfoWindow 实例
+let infoWindow = new AMap.InfoWindow({
+  offset: new AMap.Pixel(0, -30) // 弹窗偏移量
+});
+// 创建一个空数组来存储所有的 Marker
+const markers = [];
+// 遍历数据列表并为每个位置创建 Marker
+locations.forEach(location => {
+  const position = new AMap.LngLat(location.lng, location.lat);
+  createCircleMarker(position,location.info,location.addres)
+});
+function createCircleMarker(position, locationInfo,addres) {
+  if (!position || !locationInfo) {
+    console.error('Invalid position or locationInfo');
+    return;
+  }
 
+  const circleMarker = new AMap.CircleMarker({
+    center: position, // 圆心
+    radius: 10, // 半径
+    strokeColor: "white", // 轮廓线颜色
+    strokeWeight: 2, // 轮廓线宽度
+    strokeOpacity: 0.5, // 轮廓线透明度
+    fillColor: "rgba(0,0,255,1)", // 圆点填充颜色
+    fillOpacity: 0.5, // 圆点填充透明度
+    zIndex: 10, // 圆点覆盖物的叠加顺序
+    cursor: "pointer" // 鼠标悬停时的鼠标样式
+  });
+
+  // 为每个 CircleMarker 绑定点击事件
+  circleMarker.on('click', () => {
+    infoWindow.setContent(`<div class="fcolor" >${locationInfo}</div> 
+    <div class="fcolor">${addres}</div>
+    `); // 更新弹窗内容
+    infoWindow.open(map, circleMarker.getCenter()); // 打开弹窗，使用 getCenter 方法
+  });
+
+  markers.push(circleMarker);
+}
+
+// 假设 map 是已经初始化的地图实例
   map.addControl(scale);
   map.addControl(toolBar);
   map.addControl(controlBar);
   map.addControl(overView);
   map.addControl(ruler);
+  map.add(markers);
   });
   function toggleScale(checkbox) {
       if (checkbox.checked) {
@@ -152,5 +199,12 @@ AMap.plugin('AMap.MapType',function(){
       document.getElementById('toolbar').checked = false;
       toolBar.hide();
   }
+
+// setTimeout(()=>{
+//  // document.querySelector(".close-btn").onclick = clearMarker(); //绑定点击事件
+// },1000)
+// function clearMarker() {
+//   map.remove(marker); //清除 marker
+// }
 </script>
 </html>
