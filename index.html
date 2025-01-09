@@ -28,6 +28,10 @@
         padding: 4px 6px 0 6px;
       }.amap-info-outer{
         padding: 0;
+      }.fcolor2{
+        background-color: #3A3361;
+        color: #FEF9FF;
+        padding: 4px 6px 6px 6px;
       }
 
     </style>
@@ -109,9 +113,18 @@ const markerContent = `<div class="custom-content-marker">
 // });
 // 假设这是你的位置数据列表
 const locations = [
-  { lng: 116.751282, lat: 39.614755,info:'2',addres:'3' },
-  { lng: 116.404, lat: 39.915,info:'1'},
-  { lng: 115.777268, lat: 37.713982,info:'衡水艾普敦',addres:'衡水市桃城区106国道' }
+  { lng: 114.500997, lat: 38.060692,info:'河北尚学教育',addres:'石家庄市长安区美博城' },
+  { lng: 116.208816, lat: 39.915,info:'学大教育',addres:'北京市海淀区建西苑中里1号楼3层商业307号' },
+  { lng: 115.777268, lat: 37.713982,info:'衡水艾普敦',addres:'衡水市桃城区106国道' },
+  { lng: 116.751282, lat: 39.614755,info:'廊坊尚学星空',addres:'廊坊广阳旭辉十九城邦西1门旁' },
+  { lng: 114.335461, lat: 38.24707,info:'石家庄凌云师',addres:'石家庄市鹿泉区G234与翠巍路交叉口（原黄壁庄中学）' },
+  { lng: 117.224756, lat: 39.121767,info:'锐思教育',addres:'天津市河东区十一经路67号' },
+  { lng: 116.815047, lat: 39.945293,info:'新东方高三培训机构',addres:'廊坊市三河市新东方(奇丽国际大厦店)' },
+  { lng: 116.72406, lat: 39.534898,info:'廊坊梦启航培训中心',addres:'廊坊市广阳区新世纪步行街第二大街B座' },
+  { lng: 114.523852, lat: 38.03684,info:'飞鸿教育',addres:'石家庄市长安区中山东路与民心河交口东100米路南中信银行3层' },
+  { lng: 116.401638, lat: 39.11552,info:'廊坊美博教育',addres:'廊坊霸州市霸州步行街' },
+  { lng: 116.137448, lat: 39.735661,info:'廊坊京誉教育',addres:'北京市房山区良乡北关西路22号一幢二层205' },
+  { lng: 116.593293, lat: 39.567916,info:'五三教育',addres:'廊坊市广阳区采留线廊坊市第十一中学' }
 ];
 // 创建一个全局的 InfoWindow 实例
 let infoWindow = new AMap.InfoWindow({
@@ -145,7 +158,7 @@ function createCircleMarker(position, locationInfo,addres) {
   // 为每个 CircleMarker 绑定点击事件
   circleMarker.on('click', () => {
     infoWindow.setContent(`<div class="fcolor" >${locationInfo}</div> 
-    <div class="fcolor">${addres}</div>
+    <div class="fcolor2">${addres}</div>
     `); // 更新弹窗内容
     infoWindow.open(map, circleMarker.getCenter()); // 打开弹窗，使用 getCenter 方法
   });
@@ -160,6 +173,7 @@ function createCircleMarker(position, locationInfo,addres) {
   map.addControl(overView);
   map.addControl(ruler);
   map.add(markers);
+  map.setFitView(markers)
   });
   function toggleScale(checkbox) {
       if (checkbox.checked) {
